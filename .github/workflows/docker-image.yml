@@ -17,7 +17,7 @@ jobs:
       run: |
         echo "DOCKER_TAG=$(date +%s)" >> ${GITHUB_ENV}
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag ripost-floating:$(date +%s)
+      run: docker build . --file Dockerfile --tag ripost-floating:${{ env.DOCKER_TAG }} 
     - name: Test
       run: |
         docker run --rm ripost-floating:${{ env.DOCKER_TAG }}         
