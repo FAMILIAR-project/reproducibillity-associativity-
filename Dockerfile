@@ -80,5 +80,8 @@ RUN cpan install Getopt::Long enum
 # Copy your eval.py (and any other necessary files) into the container
 COPY . /workspace
 
+# Javascript
+RUN cd /workspace/js && npm install
+
 # Command to run on container start (modify as needed)
 CMD ["python3", "eval.py"]
