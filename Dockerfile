@@ -34,6 +34,13 @@ RUN cd /opt && curl -O https://julialang-s3.julialang.org/bin/linux/x64/1.10/jul
     && tar zxvf julia-1.10.2-linux-x86_64.tar.gz 
 ENV PATH="${PATH}:/opt/julia-1.10.2"
 
+# Numpy for eval.py
+RUN python3 -m pip install numpy
+
+# Perl needs enum package
+RUN cpan install Getopt::Long enum
+
+
 # Optionally, set environment variables, like JAVA_HOME
 # ENV JAVA_HOME /usr/lib/jvm/java-11-openjdk-amd64
 
