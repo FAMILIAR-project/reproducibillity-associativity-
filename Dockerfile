@@ -56,6 +56,7 @@ RUN apt-get update && apt-get install -y \
     sbcl \
     bc \
     && dpkg --add-architecture i386 \
+    && apt-get update \
     && apt-get install wine32 \
     && rm -rf /var/lib/apt/lists/*
 
