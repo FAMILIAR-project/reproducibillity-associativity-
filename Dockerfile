@@ -9,7 +9,23 @@ WORKDIR /workspace
 RUN apt-get update && apt-get install -y \
     curl \
     gnupg \
-    software-properties-common
+    software-properties-common \
+    binutils \
+    git \
+    gnupg2 \
+    libc6-dev \
+    libcurl4-openssl-dev \
+    libedit2 \
+    libgcc-9-dev \
+    libpython3.8 \
+    libsqlite3-0 \
+    libstdc++-9-dev \
+    libxml2-dev \
+    libz3-dev \
+    pkg-config \
+    tzdata \
+    unzip \
+    zlib1g-dev
 
 # Add R repository
 RUN curl -sL "https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc" | gpg --dearmor | tee /usr/share/keyrings/r-project.gpg > /dev/null
@@ -45,8 +61,14 @@ RUN julia -e 'import Pkg;Pkg.add("ArgParse")'
 
 # Add go
 RUN cd /opt && curl -LO https://go.dev/dl/go1.22.2.linux-amd64.tar.gz \
-    && tar zxvf go1.22.2.linux-amd64.tar.gz 
+    && tar zxf go1.22.2.linux-amd64.tar.gz 
 ENV PATH="${PATH}:/opt/go/bin"
+
+# Swift
+
+RUN cd /opt && curl -LO https://download.swift.org/swift-5.10-release/ubuntu2204/swift-5.10-RELEASE/swift-5.10-RELEASE-ubuntu22.04.tar.gz \
+    && tar xzf swift-5.10-RELEASE-ubuntu22.04.tar.gz
+ENV PATH="${PATH}:/opt/swift-5.10-RELEASE-ubuntu22.04/usr/bin"
 
 # Numpy for eval.py
 RUN python3 -m pip install numpy
