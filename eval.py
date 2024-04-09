@@ -481,26 +481,34 @@ print_column_names()
 
 os.chdir("perl")
 
-test_Perl_variants(GNUMBER_GENERATIONS, "ASSOCIATIVITY", None)
-test_Perl_variants(GNUMBER_GENERATIONS, "MULT_INV", None)
-test_Perl_variants(GNUMBER_GENERATIONS, "MULT_INV_PI", None)
+try:
+    test_Perl_variants(GNUMBER_GENERATIONS, "ASSOCIATIVITY", None)
+    test_Perl_variants(GNUMBER_GENERATIONS, "MULT_INV", None)
+    test_Perl_variants(GNUMBER_GENERATIONS, "MULT_INV_PI", None)
 
-test_Perl_variants(GNUMBER_GENERATIONS, "ASSOCIATIVITY", 42)
-test_Perl_variants(GNUMBER_GENERATIONS, "MULT_INV", 42)
-test_Perl_variants(GNUMBER_GENERATIONS, "MULT_INV_PI", 42)
+    test_Perl_variants(GNUMBER_GENERATIONS, "ASSOCIATIVITY", 42)
+    test_Perl_variants(GNUMBER_GENERATIONS, "MULT_INV", 42)
+    test_Perl_variants(GNUMBER_GENERATIONS, "MULT_INV_PI", 42)
+except Exception as e:
+    print("Perl failed")
+    print(e)
 
 os.chdir("..")
 
 os.chdir("go")
 
-build_GO_variants()
-test_GO_variants(GNUMBER_GENERATIONS, "associativity", None)
-test_GO_variants(GNUMBER_GENERATIONS, "mult-inverse", None)
-test_GO_variants(GNUMBER_GENERATIONS, "mult-inverse-pi", None)
+try:
+    build_GO_variants()
+    test_GO_variants(GNUMBER_GENERATIONS, "associativity", None)
+    test_GO_variants(GNUMBER_GENERATIONS, "mult-inverse", None)
+    test_GO_variants(GNUMBER_GENERATIONS, "mult-inverse-pi", None)
 
-test_GO_variants(GNUMBER_GENERATIONS, "associativity", 42)
-test_GO_variants(GNUMBER_GENERATIONS, "mult-inverse", 42)
-test_GO_variants(GNUMBER_GENERATIONS, "mult-inverse-pi", 42)
+    test_GO_variants(GNUMBER_GENERATIONS, "associativity", 42)
+    test_GO_variants(GNUMBER_GENERATIONS, "mult-inverse", 42)
+    test_GO_variants(GNUMBER_GENERATIONS, "mult-inverse-pi", 42)
+except Exception as e:
+    print("Go failed")
+    print(e)
 
 
 os.chdir("..")
@@ -508,102 +516,159 @@ os.chdir("..")
 
 os.chdir("R")
 
-test_R_variants(GNUMBER_GENERATIONS, "ASSOCIATIVITY", None)
-test_R_variants(GNUMBER_GENERATIONS, "MULT_INV", None)
-test_R_variants(GNUMBER_GENERATIONS, "MULT_INV_PI", None)
+try:
+    test_R_variants(GNUMBER_GENERATIONS, "ASSOCIATIVITY", None)
+    test_R_variants(GNUMBER_GENERATIONS, "MULT_INV", None)
+    test_R_variants(GNUMBER_GENERATIONS, "MULT_INV_PI", None)
 
-test_R_variants(GNUMBER_GENERATIONS, "ASSOCIATIVITY", 42)
-test_R_variants(GNUMBER_GENERATIONS, "MULT_INV", 42)
-test_R_variants(GNUMBER_GENERATIONS, "MULT_INV_PI", 42)
+    test_R_variants(GNUMBER_GENERATIONS, "ASSOCIATIVITY", 42)
+    test_R_variants(GNUMBER_GENERATIONS, "MULT_INV", 42)
+    test_R_variants(GNUMBER_GENERATIONS, "MULT_INV_PI", 42)
+except Exception as e:
+    print("R failed")
+    print(e)
 
 os.chdir("..")
 
 os.chdir("julia")
 
-seqs = [True, False]
-for seq in seqs:
-    test_Julia_variants(GNUMBER_GENERATIONS, "ASSOCIATIVITY", seq, None)
-    test_Julia_variants(GNUMBER_GENERATIONS, "MULT_INV", seq, None)
-    test_Julia_variants(GNUMBER_GENERATIONS, "MULT_INV_PI", seq, None)
+try:
+    seqs = [True, False]
+    for seq in seqs:
+        test_Julia_variants(GNUMBER_GENERATIONS, "ASSOCIATIVITY", seq, None)
+        test_Julia_variants(GNUMBER_GENERATIONS, "MULT_INV", seq, None)
+        test_Julia_variants(GNUMBER_GENERATIONS, "MULT_INV_PI", seq, None)
 
-    test_Julia_variants(GNUMBER_GENERATIONS, "ASSOCIATIVITY", seq, 42)
-    test_Julia_variants(GNUMBER_GENERATIONS, "MULT_INV", seq, 42)
-    test_Julia_variants(GNUMBER_GENERATIONS, "MULT_INV_PI", seq, 42)
+        test_Julia_variants(GNUMBER_GENERATIONS, "ASSOCIATIVITY", seq, 42)
+        test_Julia_variants(GNUMBER_GENERATIONS, "MULT_INV", seq, 42)
+        test_Julia_variants(GNUMBER_GENERATIONS, "MULT_INV_PI", seq, 42)
+except Exception as e:
+    print("Julia failed")
+    print(e)
 
 os.chdir("..")  # change back to previous directory
 
 os.chdir("cpp")
-test_CPlusPlus_variants(GNUMBER_GENERATIONS, "associativity", None)
-test_CPlusPlus_variants(GNUMBER_GENERATIONS, "mult-inverse", None)
-test_CPlusPlus_variants(GNUMBER_GENERATIONS, "mult-inverse-pi", None)
 
-test_CPlusPlus_variants(GNUMBER_GENERATIONS, "associativity", 42)
-test_CPlusPlus_variants(GNUMBER_GENERATIONS, "mult-inverse", 42)
-test_CPlusPlus_variants(GNUMBER_GENERATIONS, "mult-inverse-pi", 42)
+try:
+    test_CPlusPlus_variants(GNUMBER_GENERATIONS, "associativity", None)
+    test_CPlusPlus_variants(GNUMBER_GENERATIONS, "mult-inverse", None)
+    test_CPlusPlus_variants(GNUMBER_GENERATIONS, "mult-inverse-pi", None)
+
+    test_CPlusPlus_variants(GNUMBER_GENERATIONS, "associativity", 42)
+    test_CPlusPlus_variants(GNUMBER_GENERATIONS, "mult-inverse", 42)
+    test_CPlusPlus_variants(GNUMBER_GENERATIONS, "mult-inverse-pi", 42)
+except Exception as e:
+    print("C++ failed")
+    print(e)
 
 os.chdir("..")  # change back to previous directory
 
 os.chdir("ocaml")
-build_Ocaml_variants() # prerequiste
-test_Ocaml_variants(GNUMBER_GENERATIONS, "associativity", 42)
-test_Ocaml_variants(GNUMBER_GENERATIONS, "mult-inverse", 42)
-test_Ocaml_variants(GNUMBER_GENERATIONS, "mult-inverse-pi", 42)
+try:
+    build_Ocaml_variants() # prerequiste
+    test_Ocaml_variants(GNUMBER_GENERATIONS, "associativity", 42)
+    test_Ocaml_variants(GNUMBER_GENERATIONS, "mult-inverse", 42)
+    test_Ocaml_variants(GNUMBER_GENERATIONS, "mult-inverse-pi", 42)
 
-test_Ocaml_variants(GNUMBER_GENERATIONS, "associativity", None)
-test_Ocaml_variants(GNUMBER_GENERATIONS, "mult-inverse", None)
-test_Ocaml_variants(GNUMBER_GENERATIONS, "mult-inverse-pi", None)
+    test_Ocaml_variants(GNUMBER_GENERATIONS, "associativity", None)
+    test_Ocaml_variants(GNUMBER_GENERATIONS, "mult-inverse", None)
+    test_Ocaml_variants(GNUMBER_GENERATIONS, "mult-inverse-pi", None)
+except Exception as e:
+    print("Ocaml failed")
+    print(e)
+
 os.chdir("..")  # change back to previous directory
 
 os.chdir("swift")
-build_Swift_variants() # prerequiste
-test_Swift_variants(GNUMBER_GENERATIONS, "associativity")
-test_Swift_variants(GNUMBER_GENERATIONS, "mult-inverse")
-test_Swift_variants(GNUMBER_GENERATIONS, "mult-inverse-pi")
+
+try:
+    build_Swift_variants() # prerequiste
+    test_Swift_variants(GNUMBER_GENERATIONS, "associativity")
+    test_Swift_variants(GNUMBER_GENERATIONS, "mult-inverse")
+    test_Swift_variants(GNUMBER_GENERATIONS, "mult-inverse-pi")
+except Exception as e:
+    print("Swift failed")
+    print(e)
+
 os.chdir("..")  # change back to previous directory
 
 os.chdir("scala")
-# TODO: build once, run multiple times
-# TODO: scala-cli or other Scala environment (eg ScalaJS)
-test_Scala_variants(GNUMBER_GENERATIONS, "Associativity")
-test_Scala_variants(GNUMBER_GENERATIONS, "MultInv")
-test_Scala_variants(GNUMBER_GENERATIONS, "MultInvPi")
+
+try:
+    # TODO: build once, run multiple times
+    # TODO: scala-cli or other Scala environment (eg ScalaJS)
+    test_Scala_variants(GNUMBER_GENERATIONS, "Associativity")
+    test_Scala_variants(GNUMBER_GENERATIONS, "MultInv")
+    test_Scala_variants(GNUMBER_GENERATIONS, "MultInvPi")
+except Exception as e:
+    print("Scala failed")
+    print(e)
 os.chdir("..")  # change back to previous directory
 
-# TODO fix number of generations, Bash is quite slow
-test_BASH_variants(100, "associativity")
-test_BASH_variants(100, "mult_inverse")
-test_BASH_variants(100, "mult_inverse_pi")
+try:
+    # TODO fix number of generations, Bash is quite slow
+    test_BASH_variants(100, "associativity")
+    test_BASH_variants(100, "mult_inverse")
+    test_BASH_variants(100, "mult_inverse_pi")
+except Exception as e:
+    print("Bash failed")
+    print(e)
 
-test_LISP_variants(42000) # TODO: play with number of generations (proportions), default value used right now
+try:
+    test_LISP_variants(42000) # TODO: play with number of generations (proportions), default value used right now
+except Exception as e:
+    print("LISP failed")
+    print(e)
 
-test_JavaScript_variants("associativity", True, GNUMBER_GENERATIONS)
-test_JavaScript_variants("mult_inverse", True, GNUMBER_GENERATIONS)
-test_JavaScript_variants("mult_inverse_pi", True, GNUMBER_GENERATIONS)
-test_JavaScript_variants("associativity", False, GNUMBER_GENERATIONS)
-test_JavaScript_variants("mult_inverse", False, GNUMBER_GENERATIONS)
-test_JavaScript_variants("mult_inverse_pi", False, GNUMBER_GENERATIONS)
+try:
+    test_JavaScript_variants("associativity", True, GNUMBER_GENERATIONS)
+    test_JavaScript_variants("mult_inverse", True, GNUMBER_GENERATIONS)
+    test_JavaScript_variants("mult_inverse_pi", True, GNUMBER_GENERATIONS)
+    test_JavaScript_variants("associativity", False, GNUMBER_GENERATIONS)
+    test_JavaScript_variants("mult_inverse", False, GNUMBER_GENERATIONS)
+    test_JavaScript_variants("mult_inverse_pi", False, GNUMBER_GENERATIONS)
+except Exception as e:
+    print("JavaScript failed")
+    print(e)
 
-# TODO: doubt: is run building?
-test_RUST_variants("associativity", GNUMBER_GENERATIONS, "0.000000000000001")
-test_RUST_variants("mult_inverse", GNUMBER_GENERATIONS, "0.000000000000001")
-test_RUST_variants("mult_inverse_pi", GNUMBER_GENERATIONS, "0.000000000000001")
-test_RUST_variants("associativity", GNUMBER_GENERATIONS)
-test_RUST_variants("mult_inverse", GNUMBER_GENERATIONS)
-test_RUST_variants("mult_inverse_pi", GNUMBER_GENERATIONS)
+try:
+    # TODO: doubt: is run building?
+    test_RUST_variants("associativity", GNUMBER_GENERATIONS, "0.000000000000001")
+    test_RUST_variants("mult_inverse", GNUMBER_GENERATIONS, "0.000000000000001")
+    test_RUST_variants("mult_inverse_pi", GNUMBER_GENERATIONS, "0.000000000000001")
+    test_RUST_variants("associativity", GNUMBER_GENERATIONS)
+    test_RUST_variants("mult_inverse", GNUMBER_GENERATIONS)
+    test_RUST_variants("mult_inverse_pi", GNUMBER_GENERATIONS)
+except Exception as e:
+    print("Rust failed")
+    print(e)
 
-test_C_variants(GNUMBER_GENERATIONS) # includes compilation and runtime variations
+try:
+    test_C_variants(GNUMBER_GENERATIONS) # includes compilation and runtime variations
+except Exception as e:
+    print("C failed")
+    print(e)
+
+try:
+    compile_JAVA_variants() # prerequisites, applies to all variants
+    test_JAVA_variants("java.util.Random.nextFloat()", GNUMBER_GENERATIONS, "basic")
+    test_JAVA_variants("Math.random()", GNUMBER_GENERATIONS, "math")
+    test_JAVA_variants("java.util.Random.nextDouble()", GNUMBER_GENERATIONS, "double")
+except Exception as e:
+    print("Java failed")
+    print(e)
+
+try:
+    test_PY_variants("associativity", GNUMBER_GENERATIONS)
+    test_PY_variants("mult-inverse", GNUMBER_GENERATIONS)
+    test_PY_variants("mult-inverse-pi", GNUMBER_GENERATIONS)
+
+    test_PY_variants("associativity", GNUMBER_GENERATIONS, 42)
+    test_PY_variants("mult-inverse", GNUMBER_GENERATIONS, 42)
+    test_PY_variants("mult-inverse-pi", GNUMBER_GENERATIONS, 42)
+except Exception as e:
+    print("Python failed")
+    print(e)
 
 
-compile_JAVA_variants() # prerequisites, applies to all variants
-test_JAVA_variants("java.util.Random.nextFloat()", GNUMBER_GENERATIONS, "basic")
-test_JAVA_variants("Math.random()", GNUMBER_GENERATIONS, "math")
-test_JAVA_variants("java.util.Random.nextDouble()", GNUMBER_GENERATIONS, "double")
-
-
-test_PY_variants("associativity", GNUMBER_GENERATIONS)
-test_PY_variants("mult-inverse", GNUMBER_GENERATIONS)
-test_PY_variants("mult-inverse-pi", GNUMBER_GENERATIONS)
-
-test_PY_variants("associativity", GNUMBER_GENERATIONS, 42)
-test_PY_variants("mult-inverse", GNUMBER_GENERATIONS, 42)
-test_PY_variants("mult-inverse-pi", GNUMBER_GENERATIONS, 42)
