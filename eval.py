@@ -1,6 +1,6 @@
 import os
 import subprocess
-
+import traceback
 import numpy as np
 
 GNUMBER_GENERATIONS=100
@@ -262,7 +262,7 @@ def test_BASH_variants(ngen, rel_eq):
         "EqualityCheck": rel_eq
     }
       
-    cmd_args = ["sh", "testassoc.sh", "-n", str(ngen), "-e", rel_eq]
+    cmd_args = ["bash", "testassoc.sh", "-n", str(ngen), "-e", rel_eq]
     cmd_str = " ".join(cmd_args)
     result_str = analyze_results(REPEAT, cmd_str)    
     print_variant_results(variant_info, result_str)
@@ -491,7 +491,7 @@ try:
     test_Perl_variants(GNUMBER_GENERATIONS, "MULT_INV_PI", 42)
 except Exception as e:
     print("Perl failed")
-    print(e)
+    traceback.print_exc()
 
 os.chdir("..")
 
@@ -508,7 +508,7 @@ try:
     test_GO_variants(GNUMBER_GENERATIONS, "mult-inverse-pi", 42)
 except Exception as e:
     print("Go failed")
-    print(e)
+    traceback.print_exc()
 
 
 os.chdir("..")
@@ -526,7 +526,7 @@ try:
     test_R_variants(GNUMBER_GENERATIONS, "MULT_INV_PI", 42)
 except Exception as e:
     print("R failed")
-    print(e)
+    traceback.print_exc()
 
 os.chdir("..")
 
@@ -544,7 +544,7 @@ try:
         test_Julia_variants(GNUMBER_GENERATIONS, "MULT_INV_PI", seq, 42)
 except Exception as e:
     print("Julia failed")
-    print(e)
+    traceback.print_exc()
 
 os.chdir("..")  # change back to previous directory
 
@@ -560,7 +560,7 @@ try:
     test_CPlusPlus_variants(GNUMBER_GENERATIONS, "mult-inverse-pi", 42)
 except Exception as e:
     print("C++ failed")
-    print(e)
+    traceback.print_exc()
 
 os.chdir("..")  # change back to previous directory
 
@@ -576,7 +576,7 @@ try:
     test_Ocaml_variants(GNUMBER_GENERATIONS, "mult-inverse-pi", None)
 except Exception as e:
     print("Ocaml failed")
-    print(e)
+    traceback.print_exc()
 
 os.chdir("..")  # change back to previous directory
 
@@ -589,7 +589,7 @@ try:
     test_Swift_variants(GNUMBER_GENERATIONS, "mult-inverse-pi")
 except Exception as e:
     print("Swift failed")
-    print(e)
+    traceback.print_exc()
 
 os.chdir("..")  # change back to previous directory
 
@@ -603,7 +603,7 @@ try:
     test_Scala_variants(GNUMBER_GENERATIONS, "MultInvPi")
 except Exception as e:
     print("Scala failed")
-    print(e)
+    traceback.print_exc()
 os.chdir("..")  # change back to previous directory
 
 try:
@@ -613,13 +613,13 @@ try:
     test_BASH_variants(100, "mult_inverse_pi")
 except Exception as e:
     print("Bash failed")
-    print(e)
+    traceback.print_exc()
 
 try:
     test_LISP_variants(42000) # TODO: play with number of generations (proportions), default value used right now
 except Exception as e:
     print("LISP failed")
-    print(e)
+    traceback.print_exc()
 
 try:
     test_JavaScript_variants("associativity", True, GNUMBER_GENERATIONS)
@@ -630,7 +630,7 @@ try:
     test_JavaScript_variants("mult_inverse_pi", False, GNUMBER_GENERATIONS)
 except Exception as e:
     print("JavaScript failed")
-    print(e)
+    traceback.print_exc()
 
 try:
     # TODO: doubt: is run building?
@@ -642,13 +642,13 @@ try:
     test_RUST_variants("mult_inverse_pi", GNUMBER_GENERATIONS)
 except Exception as e:
     print("Rust failed")
-    print(e)
+    traceback.print_exc()
 
 try:
     test_C_variants(GNUMBER_GENERATIONS) # includes compilation and runtime variations
 except Exception as e:
     print("C failed")
-    print(e)
+    traceback.print_exc()
 
 try:
     compile_JAVA_variants() # prerequisites, applies to all variants
@@ -657,7 +657,7 @@ try:
     test_JAVA_variants("java.util.Random.nextDouble()", GNUMBER_GENERATIONS, "double")
 except Exception as e:
     print("Java failed")
-    print(e)
+    traceback.print_exc()
 
 try:
     test_PY_variants("associativity", GNUMBER_GENERATIONS)
@@ -669,6 +669,6 @@ try:
     test_PY_variants("mult-inverse-pi", GNUMBER_GENERATIONS, 42)
 except Exception as e:
     print("Python failed")
-    print(e)
+    traceback.print_exc()
 
 
