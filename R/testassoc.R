@@ -1,6 +1,11 @@
+#define packages to install
+packages <- c('optparse')
+
+#install all packages that are not already installed
+install.packages(setdiff(packages, rownames(installed.packages())),,repos = "http://cran.us.r-project.org")
 # Load required packages
 library(optparse)
-# library(enum)
+library(enum)
 
 # Define an enumeration class for the EqualityCheck
 EqualityCheck <- list(ASSOCIATIVITY="ASSOCIATIVITY", MULT_INV="MULT_INV", MULT_INV_PI="MULT_INV_PI")
