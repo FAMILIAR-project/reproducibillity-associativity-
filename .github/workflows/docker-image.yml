@@ -13,8 +13,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+    - name: set docker tag
+      run: |
+        echo "DOCKER_TAG=$(date +%s)" >> ${GITHUB_ENV}
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag ripost-floating:$(date +%s)
     - name: Test
       run: |
-        docker run --rm ripost-floating:latest         
+        docker run --rm ripost-floating:${{ env.DOCKER_TAG }}         
