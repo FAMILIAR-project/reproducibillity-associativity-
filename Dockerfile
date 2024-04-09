@@ -57,7 +57,7 @@ RUN apt-get update && apt-get install -y \
     bc \
     && dpkg --add-architecture i386 \
     && apt-get update \
-    && apt-get install wine32 \
+    && apt-get install -y wine32 \
     && rm -rf /var/lib/apt/lists/*
 
 # Get julia and add it to the PATH
