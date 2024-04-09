@@ -1,0 +1,59 @@
+namespace floatingRIPOST
+
+features
+    "Floating Point Experiment" {abstract}
+        mandatory
+            "Language"
+                alternative
+                    C
+                    Rust
+                    R
+                    Perl
+                    OCaml
+                    Python
+                    Scala
+            "Compilation Flags"
+                or
+                    "-O2"
+                    "-O3"
+                    "-Os"
+                    "-O0"
+                    "-Ofast"
+                    // customFlags "Specify any custom flags"
+            "Data Types"
+                or
+                    double
+                    float
+                    long
+                    f16
+                    f32
+                    f64
+            Integer "Experiment Repetitions"
+            Integer "Random Draws"
+            "Random Generation Method"
+                alternative
+                    "Uniform Distribution"
+                    "Uniform Distribution [0,1]"
+                    "Naive Random Generator"
+            "Operating System"
+                alternative
+                    Windows
+                    MacOS
+                    Linux
+            "Algebraic Relation"
+                or
+                    Associativity
+                    RelationWithPi
+                    Inverses
+                    // customRelation "Specify any custom relation"
+            "Processor Type"
+                alternative
+                    CPU
+                    GPU
+
+        optional
+            "Cross Compilation"
+constraints
+    C => double | float | long
+    Rust => f16 | f32 | f64
+    Windows => "Cross Compilation"
