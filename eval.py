@@ -3,11 +3,25 @@ import subprocess
 import traceback
 import numpy as np
 
-GNUMBER_GENERATIONS=100
-REPEAT=10
-CSV_SEPARATOR=","
+GNUMBER_GENERATIONS = 100
+REPEAT = 10
+CSV_SEPARATOR = ","
 
-COLUMN_NAMES = ["Language", "Library", "System", "Compiler", "VariabilityMisc", "EqualityCheck", "NumberGenerations", "Repeat", "min", "max", "std", "mean"]
+COLUMN_NAMES = [
+    "Language",
+    "Library",
+    "System",
+    "Compiler",
+    "VariabilityMisc",
+    "EqualityCheck",
+    "NumberGenerations",
+    "Repeat",
+    "min",
+    "max",
+    "std",
+    "mean",
+]
+
 
 def print_column_names():
     # Print column names with separator, except for last element
@@ -17,6 +31,7 @@ def print_column_names():
         else:
             print(col)
 
+
 def print_variant_results(variant_info, result):
     for k in result.keys():
         variant_info[k] = result[k]
@@ -24,8 +39,8 @@ def print_variant_results(variant_info, result):
         if i < len(COLUMN_NAMES) - 1:
             if col in variant_info:
                 print(f"{variant_info[col]}{CSV_SEPARATOR}", end="")
-            elif col == "Repeat": # assuming Repeat is not the last column
-                print(f"{REPEAT}{CSV_SEPARATOR}", end="")            
+            elif col == "Repeat":  # assuming Repeat is not the last column
+                print(f"{REPEAT}{CSV_SEPARATOR}", end="")
             else:
                 print(f"{CSV_SEPARATOR}", end="")
         else:
@@ -36,18 +51,18 @@ def print_variant_results(variant_info, result):
 
 
 def analyze_results(repeat, cmd_str):
-    assert(repeat > 0)
+    assert repeat > 0
     results = []
     for i in range(repeat):
         result = subprocess.run(cmd_str, shell=True, capture_output=True, text=True)
         results.append(result.stdout.strip())
     # compute min, max, mean, std of results and store them in a dictionary
-    # each element of results being a string ending with % 
+    # each element of results being a string ending with %
     results = [float(r.replace("%", "")) for r in results]
     res = {
         "min": np.min(results),
         "max": np.max(results),
-        "mean": np.mean(results), # assume repeat > 0
+        "mean": np.mean(results),  # assume repeat > 0
         "std": np.std(results),
     }
     return res
@@ -58,13 +73,13 @@ def analyze_results(repeat, cmd_str):
 
 def test_PY_variants(test_name, ngen, seed=None):
     variant_info = {
-    "Language": "Python",
-    "Library": "std",
-    "System" : "linux",
-    "Compiler": "",
-    "VariabilityMisc": "",
-    "NumberGenerations": ngen,
-    "EqualityCheck": test_name,
+        "Language": "Python",
+        "Library": "std",
+        "System": "linux",
+        "Compiler": "",
+        "VariabilityMisc": "",
+        "NumberGenerations": ngen,
+        "EqualityCheck": test_name,
     }
 
     if seed is not None:
@@ -72,13 +87,20 @@ def test_PY_variants(test_name, ngen, seed=None):
     else:
         variant_info["VariabilityMisc"] = "no seed"
 
-    cmd_args = ["python3", "testassoc.py", "--number", str(ngen), "--equality-check", test_name]
+    cmd_args = [
+        "python3",
+        "testassoc.py",
+        "--number",
+        str(ngen),
+        "--equality-check",
+        test_name,
+    ]
     if seed is not None:
         cmd_args.extend(["--seed", str(seed)])
     cmd_str = " ".join(cmd_args)
     result = analyze_results(REPEAT, cmd_str)
     print_variant_results(variant_info, result)
-   
+
 
 def compile_JAVA_variants():
     # execute javac -d . *.java
@@ -89,7 +111,7 @@ def compile_JAVA_variants():
         print("Error while compiling Java variants")
         print(result.stderr)
         exit(1)
-    
+
 
 # TODO JDK version... GraalVM?
 def test_JAVA_variants(rand_strategy_name, ngen, test_cmd):
@@ -100,7 +122,7 @@ def test_JAVA_variants(rand_strategy_name, ngen, test_cmd):
         "Compiler": "",
         "VariabilityMisc": "",
         "NumberGenerations": GNUMBER_GENERATIONS,
-        "EqualityCheck": "associativity", # TODO associativity only at the moment
+        "EqualityCheck": "associativity",  # TODO associativity only at the moment
     }
 
     cmd_args = ["java", "assoc.TestAssoc", test_cmd, str(ngen)]
@@ -108,8 +130,8 @@ def test_JAVA_variants(rand_strategy_name, ngen, test_cmd):
     result = analyze_results(REPEAT, cmd_str)
     print_variant_results(variant_info, result)
 
-def test_C_variants(ngen):
 
+def test_C_variants(ngen):
     variant_info = {
         "Language": "C",
         "Library": "",
@@ -117,7 +139,7 @@ def test_C_variants(ngen):
         "Compiler": "",
         "VariabilityMisc": "",
         "NumberGenerations": ngen,
-        "EqualityCheck": "associativity", # TODO associativity only supported at the moment
+        "EqualityCheck": "associativity",  # TODO associativity only supported at the moment
     }
 
     COMPILERS = ["gcc", "clang"]
@@ -134,7 +156,7 @@ def test_C_variants(ngen):
 
                 if compiler == "gcc" and "-DWIN=1" in OPTIONS[i]:
                     compiler = "i686-w64-mingw32-gcc"
-                
+
                 if i == 0:
                     library_name = "custom"
                     os_name = "Linux"
@@ -145,13 +167,13 @@ def test_C_variants(ngen):
                     library_name = "custom"
                     if "gcc" in compiler:
                         os_name = "Windows (with wine and cross-compilation)"
-                    else: # clang
+                    else:  # clang
                         os_name = "Linux (no cross-compilation with clang)"
                 else:
                     library_name = "(srand+rand)"
                     if "gcc" in compiler:
                         os_name = "Windows (with wine and cross-compilation)"
-                    else: # clang
+                    else:  # clang
                         os_name = "Linux (no cross-compilation with clang)"
 
                 variant_info["Library"] = library_name
@@ -159,26 +181,38 @@ def test_C_variants(ngen):
                 variant_info["Compiler"] = compiler
                 variant_info["VariabilityMisc"] = OPTIONS[i] + " " + flag
                 variant_info["NumberGenerations"] = ngen
-                
-                # compilation
-                compile_cmd_arg = [compiler, "-o", "testassoc", "testassoc.c", OPTIONS[i], flag]
-                clean_compile_cmd_args = [cmd_arg for cmd_arg in compile_cmd_arg if cmd_arg != ""]
 
-                compilation_result = subprocess.run(clean_compile_cmd_args, capture_output=True, text=True)
+                # compilation
+                compile_cmd_arg = [
+                    compiler,
+                    "-o",
+                    "testassoc",
+                    "testassoc.c",
+                    OPTIONS[i],
+                    flag,
+                ]
+                clean_compile_cmd_args = [
+                    cmd_arg for cmd_arg in compile_cmd_arg if cmd_arg != ""
+                ]
+
+                compilation_result = subprocess.run(
+                    clean_compile_cmd_args, capture_output=True, text=True
+                )
                 if compilation_result.returncode != 0:
                     print("Error while compiling C variant")
                     print(compilation_result.stderr)
-                    exit(1)         
-               
-                # execution 
-                exec_cmd_str = " ".join(cmd_args)               
-                result_str = analyze_results(REPEAT, exec_cmd_str) # TODO: wine environement debug
+                    exit(1)
+
+                # execution
+                exec_cmd_str = " ".join(cmd_args)
+                result_str = analyze_results(
+                    REPEAT, exec_cmd_str
+                )  # TODO: wine environement debug
 
                 print_variant_results(variant_info, result_str)
 
 
 def test_RUST_variants(feature, ngen, error_margin=None):
-
     variant_info = {
         "Language": "Rust",
         "Library": "",
@@ -186,16 +220,25 @@ def test_RUST_variants(feature, ngen, error_margin=None):
         "Compiler": "",
         "VariabilityMisc": "",
         "NumberGenerations": ngen,
-        "EqualityCheck": feature
+        "EqualityCheck": feature,
     }
 
     if error_margin:
         variability_misc = f"--error_margin {error_margin}"
-        cmd_args = ["cargo", "run", "--features", feature, "-q", "--", "--error_margin", error_margin]
+        cmd_args = [
+            "cargo",
+            "run",
+            "--features",
+            feature,
+            "-q",
+            "--",
+            "--error_margin",
+            error_margin,
+        ]
     else:
         variability_misc = f"(no error margin ie pure equality)"
         cmd_args = ["cargo", "run", "--features", feature, "-q", "--"]
-    
+
     variant_info["VariabilityMisc"] = variability_misc
 
     cmd_str = " ".join(cmd_args)
@@ -212,7 +255,7 @@ def test_LISP_variants(ngen):
         "Compiler": "",
         "VariabilityMisc": "",
         "NumberGenerations": ngen,
-        "EqualityCheck": "associativity"
+        "EqualityCheck": "associativity",
     }
 
     cmd_args = ["sbcl", "--noinform", "--quit", "--load", "test_assoc.lisp"]
@@ -221,8 +264,8 @@ def test_LISP_variants(ngen):
     print_variant_results(variant_info, result_str)
 
 
-
 SEED = "42"
+
 
 def test_JavaScript_variants(check, with_gseed, ngen):
     variant_info = {
@@ -232,9 +275,9 @@ def test_JavaScript_variants(check, with_gseed, ngen):
         "Compiler": "",
         "VariabilityMisc": "",
         "NumberGenerations": ngen,
-        "EqualityCheck": check
+        "EqualityCheck": check,
     }
-  
+
     if with_gseed:
         variability_misc = "global seed"
     else:
@@ -242,7 +285,18 @@ def test_JavaScript_variants(check, with_gseed, ngen):
 
     variant_info["VariabilityMisc"] = variability_misc
 
-    npm_args = ["--prefix", "js/", "--silent", "--", "--equality-check", check, "--seed", SEED, "--number", str(ngen)]
+    npm_args = [
+        "--prefix",
+        "js/",
+        "--silent",
+        "--",
+        "--equality-check",
+        check,
+        "--seed",
+        SEED,
+        "--number",
+        str(ngen),
+    ]
     if with_gseed:
         npm_args.append("--with-gseed")
 
@@ -259,12 +313,12 @@ def test_BASH_variants(ngen, rel_eq):
         "Compiler": "",
         "VariabilityMisc": "",
         "NumberGenerations": ngen,
-        "EqualityCheck": rel_eq
+        "EqualityCheck": rel_eq,
     }
-      
+
     cmd_args = ["bash", "testassoc.sh", "-n", str(ngen), "-e", rel_eq]
     cmd_str = " ".join(cmd_args)
-    result_str = analyze_results(REPEAT, cmd_str)    
+    result_str = analyze_results(REPEAT, cmd_str)
     print_variant_results(variant_info, result_str)
 
 
@@ -276,14 +330,25 @@ def test_Scala_variants(ngen, rel_eq):
         "Compiler": "",
         "VariabilityMisc": "",
         "NumberGenerations": ngen,
-        "EqualityCheck": rel_eq
+        "EqualityCheck": rel_eq,
     }
-    # sbt is very long to start, so we use --batch to avoid the interactive mode 
+    # sbt is very long to start, so we use --batch to avoid the interactive mode
     # other optimizations worth trying (but not implemented here) TODO
     # cmd_str = 'sbt -warn -Dsbt.log.noformat=true "run --seed 42 --number {} --equality-check {}"'.format(ngen, rel_eq)
-    cmd_str = 'sbt --batch -warn -Dsbt.log.noformat=true "runMain Main --seed 42 --number {} --equality-check {}"'.format(ngen, rel_eq)
+    cmd_str = 'sbt --batch -warn -Dsbt.log.noformat=true "runMain Main --seed 42 --number {} --equality-check {}"'.format(
+        ngen, rel_eq
+    )
     result_str = analyze_results(REPEAT, cmd_str)
     print_variant_results(variant_info, result_str)
+
+
+def build_Scala_variants():
+    cmd_str = 'sbt --batch -warn -Dsbt.log.noformat=true "runMain Main --seed 42 --number 1 --equality-check Associativity"'
+    result = subprocess.run(cmd_str, shell=True, capture_output=True, text=True)
+    if result.returncode != 0:
+        print("Error while preparing Scala")
+        print(result.stderr)
+        exit(1)
 
 
 def test_Swift_variants(ngen, rel_eq):
@@ -294,10 +359,12 @@ def test_Swift_variants(ngen, rel_eq):
         "Compiler": "",
         "VariabilityMisc": "",
         "NumberGenerations": ngen,
-        "EqualityCheck": rel_eq
+        "EqualityCheck": rel_eq,
     }
-    
-    cmd_str = 'swift run --skip-build testassoc --number {} --equality-check {}'.format(ngen, rel_eq) # incredible: Swift has no --quiet mode yet https://github.com/apple/swift-package-manager/issues/4395 (dec 2022)
+
+    cmd_str = "swift run --skip-build testassoc --number {} --equality-check {}".format(
+        ngen, rel_eq
+    )  # incredible: Swift has no --quiet mode yet https://github.com/apple/swift-package-manager/issues/4395 (dec 2022)
     result_str = analyze_results(REPEAT, cmd_str)
     print_variant_results(variant_info, result_str)
 
@@ -311,7 +378,9 @@ def build_Swift_variants():
         print(result.stderr)
         exit(1)
 
+
 ############## Ocaml
+
 
 def test_Ocaml_variants(ngen, rel_eq, seed=42):
     variant_info = {
@@ -321,15 +390,18 @@ def test_Ocaml_variants(ngen, rel_eq, seed=42):
         "Compiler": "",
         "VariabilityMisc": "",
         "NumberGenerations": ngen,
-        "EqualityCheck": rel_eq
+        "EqualityCheck": rel_eq,
     }
     if seed is None:
-        cmd_str = './testassoc --number {} --equality-check {}'.format(ngen, rel_eq)
+        cmd_str = "./testassoc --number {} --equality-check {}".format(ngen, rel_eq)
     else:
-        cmd_str = './testassoc --number {} --equality-check {} --seed {}'.format(ngen, rel_eq, seed) 
+        cmd_str = "./testassoc --number {} --equality-check {} --seed {}".format(
+            ngen, rel_eq, seed
+        )
     variant_info["VariabilityMisc"] = "seed {}".format(seed)
     result_str = analyze_results(REPEAT, cmd_str)
     print_variant_results(variant_info, result_str)
+
 
 def build_Ocaml_variants():
     cmd_args = ["ocamlopt", "-o", "testassoc", "testassoc.ml"]
@@ -343,47 +415,65 @@ def build_Ocaml_variants():
 
 ################### C++
 
+
 def test_CPlusPlus_variants(ngen, rel_eq, seed=42):
-
     variant_info = {
-            "Language": "C++",
-            "Library": "",
-            "System": "",
-            "Compiler": "",
-            "VariabilityMisc": "seed {}".format(seed),
-            "NumberGenerations": ngen,
-            "EqualityCheck": rel_eq, 
-        }
+        "Language": "C++",
+        "Library": "",
+        "System": "",
+        "Compiler": "",
+        "VariabilityMisc": "seed {}".format(seed),
+        "NumberGenerations": ngen,
+        "EqualityCheck": rel_eq,
+    }
 
-    COMPILERS = ["g++", "clang++"]       
+    COMPILERS = ["g++", "clang++"]
 
-    for compiler in COMPILERS:       
-        
+    for compiler in COMPILERS:
         variant_info["Compiler"] = compiler
-                
+
         # compilation
         # -fstrict-enums can be used for gcc but does not change
         # incredible discussion here: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=87951
         compile_cmd_arg = [compiler, "-std=c++11", "-o", "testassoc", "testassoc.cpp"]
-        
-        compilation_result = subprocess.run(compile_cmd_arg, capture_output=True, text=True)
+
+        compilation_result = subprocess.run(
+            compile_cmd_arg, capture_output=True, text=True
+        )
         if compilation_result.returncode != 0:
             print("Error while compiling C++ variant")
             print(compilation_result.stderr)
-            exit(1)         
-    
-        # execution 
+            exit(1)
+
+        # execution
         if seed is None:
-            cmd_args = ["./testassoc", "--number", str(ngen), "--equality-check", rel_eq]
+            cmd_args = [
+                "./testassoc",
+                "--number",
+                str(ngen),
+                "--equality-check",
+                rel_eq,
+            ]
         else:
-            cmd_args = ["./testassoc", "--number", str(ngen), "--equality-check", rel_eq, "--seed", str(seed)]
-        exec_cmd_str = " ".join(cmd_args)               
-        result_str = analyze_results(REPEAT, exec_cmd_str) # TODO: wine environement debug
+            cmd_args = [
+                "./testassoc",
+                "--number",
+                str(ngen),
+                "--equality-check",
+                rel_eq,
+                "--seed",
+                str(seed),
+            ]
+        exec_cmd_str = " ".join(cmd_args)
+        result_str = analyze_results(
+            REPEAT, exec_cmd_str
+        )  # TODO: wine environement debug
 
         print_variant_results(variant_info, result_str)
 
 
 ########### Julia
+
 
 def test_Julia_variants(ngen, rel_eq, strict_equality, seed=42):
     variant_info = {
@@ -393,12 +483,18 @@ def test_Julia_variants(ngen, rel_eq, strict_equality, seed=42):
         "Compiler": "",
         "VariabilityMisc": "seed {}".format(seed),
         "NumberGenerations": ngen,
-        "EqualityCheck": rel_eq, 
-        }
+        "EqualityCheck": rel_eq,
+    }
     if seed is None:
-        cmd_str = 'julia src/testassoc.jl --number={} --equality-check={}'.format(ngen, rel_eq)
+        cmd_str = "julia src/testassoc.jl --number={} --equality-check={}".format(
+            ngen, rel_eq
+        )
     else:
-        cmd_str = 'julia src/testassoc.jl --number={} --equality-check={} --seed={}'.format(ngen, rel_eq, seed) 
+        cmd_str = (
+            "julia src/testassoc.jl --number={} --equality-check={} --seed={}".format(
+                ngen, rel_eq, seed
+            )
+        )
     if strict_equality:
         cmd_str += " --strict-equality=true"
         variant_info["VariabilityMisc"] += " strict-equality"
@@ -417,18 +513,21 @@ def test_R_variants(ngen, rel_eq, seed=42):
         "Compiler": "",
         "VariabilityMisc": "seed {}".format(seed),
         "NumberGenerations": ngen,
-        "EqualityCheck": rel_eq, 
-        }
+        "EqualityCheck": rel_eq,
+    }
     if seed is None:
-        cmd_str = 'Rscript testassoc.R --number={} --eq_check={}'.format(ngen, rel_eq)
+        cmd_str = "Rscript testassoc.R --number={} --eq_check={}".format(ngen, rel_eq)
     else:
-        cmd_str = 'Rscript testassoc.R --number={} --eq_check={} --seed={}'.format(ngen, rel_eq, seed) 
-    
+        cmd_str = "Rscript testassoc.R --number={} --eq_check={} --seed={}".format(
+            ngen, rel_eq, seed
+        )
+
     result_str = analyze_results(REPEAT, cmd_str)
     print_variant_results(variant_info, result_str)
 
 
 ########### Go
+
 
 def test_GO_variants(ngen, rel_eq, seed=42):
     variant_info = {
@@ -438,14 +537,15 @@ def test_GO_variants(ngen, rel_eq, seed=42):
         "Compiler": "",
         "VariabilityMisc": "seed {}".format(seed),
         "NumberGenerations": ngen,
-        "EqualityCheck": rel_eq, 
-        }
-    cmd_str = './testassoc -number {} -equality-check {}'.format(ngen, rel_eq)
+        "EqualityCheck": rel_eq,
+    }
+    cmd_str = "./testassoc -number {} -equality-check {}".format(ngen, rel_eq)
     if seed is not None:
-        cmd_str = cmd_str + ' -seed={}'.format(seed) 
-    
+        cmd_str = cmd_str + " -seed={}".format(seed)
+
     result_str = analyze_results(REPEAT, cmd_str)
     print_variant_results(variant_info, result_str)
+
 
 def build_GO_variants():
     cmd_args = ["go", "build", "-o", "testassoc", "testassoc.go"]
@@ -456,7 +556,9 @@ def build_GO_variants():
         print(result.stderr)
         exit(1)
 
+
 ########### Perl
+
 
 def test_Perl_variants(ngen, rel_eq, seed=42):
     variant_info = {
@@ -466,16 +568,17 @@ def test_Perl_variants(ngen, rel_eq, seed=42):
         "Compiler": "",
         "VariabilityMisc": "seed {}".format(seed),
         "NumberGenerations": ngen,
-        "EqualityCheck": rel_eq, 
-        }
-    cmd_str = 'perl testassoc.pl --number {} --equality-check {}'.format(ngen, rel_eq)
+        "EqualityCheck": rel_eq,
+    }
+    cmd_str = "perl testassoc.pl --number {} --equality-check {}".format(ngen, rel_eq)
     if seed is not None:
-        cmd_str = cmd_str + ' --seed={}'.format(seed) 
-    
+        cmd_str = cmd_str + " --seed={}".format(seed)
+
     result_str = analyze_results(REPEAT, cmd_str)
     print_variant_results(variant_info, result_str)
 
-#################### VARIANTS execution 
+
+#################### VARIANTS execution
 
 print_column_names()
 
@@ -491,7 +594,7 @@ try:
     test_Perl_variants(GNUMBER_GENERATIONS, "MULT_INV_PI", 42)
 except Exception as e:
     print("Perl failed")
-    traceback.print_exc()
+    traceback.print_exception(e)
 
 os.chdir("..")
 
@@ -508,7 +611,7 @@ try:
     test_GO_variants(GNUMBER_GENERATIONS, "mult-inverse-pi", 42)
 except Exception as e:
     print("Go failed")
-    traceback.print_exc()
+    traceback.print_exception(e)
 
 
 os.chdir("..")
@@ -526,7 +629,7 @@ try:
     test_R_variants(GNUMBER_GENERATIONS, "MULT_INV_PI", 42)
 except Exception as e:
     print("R failed")
-    traceback.print_exc()
+    traceback.print_exception(e)
 
 os.chdir("..")
 
@@ -544,7 +647,7 @@ try:
         test_Julia_variants(GNUMBER_GENERATIONS, "MULT_INV_PI", seq, 42)
 except Exception as e:
     print("Julia failed")
-    traceback.print_exc()
+    traceback.print_exception(e)
 
 os.chdir("..")  # change back to previous directory
 
@@ -560,13 +663,13 @@ try:
     test_CPlusPlus_variants(GNUMBER_GENERATIONS, "mult-inverse-pi", 42)
 except Exception as e:
     print("C++ failed")
-    traceback.print_exc()
+    traceback.print_exception(e)
 
 os.chdir("..")  # change back to previous directory
 
 os.chdir("ocaml")
 try:
-    build_Ocaml_variants() # prerequiste
+    build_Ocaml_variants()  # prerequiste
     test_Ocaml_variants(GNUMBER_GENERATIONS, "associativity", 42)
     test_Ocaml_variants(GNUMBER_GENERATIONS, "mult-inverse", 42)
     test_Ocaml_variants(GNUMBER_GENERATIONS, "mult-inverse-pi", 42)
@@ -576,20 +679,20 @@ try:
     test_Ocaml_variants(GNUMBER_GENERATIONS, "mult-inverse-pi", None)
 except Exception as e:
     print("Ocaml failed")
-    traceback.print_exc()
+    traceback.print_exception(e)
 
 os.chdir("..")  # change back to previous directory
 
 os.chdir("swift")
 
 try:
-    build_Swift_variants() # prerequiste
+    build_Swift_variants()  # prerequiste
     test_Swift_variants(GNUMBER_GENERATIONS, "associativity")
     test_Swift_variants(GNUMBER_GENERATIONS, "mult-inverse")
     test_Swift_variants(GNUMBER_GENERATIONS, "mult-inverse-pi")
 except Exception as e:
     print("Swift failed")
-    traceback.print_exc()
+    traceback.print_exception(e)
 
 os.chdir("..")  # change back to previous directory
 
@@ -598,12 +701,14 @@ os.chdir("scala")
 try:
     # TODO: build once, run multiple times
     # TODO: scala-cli or other Scala environment (eg ScalaJS)
+    build_Scala_variants()
     test_Scala_variants(GNUMBER_GENERATIONS, "Associativity")
     test_Scala_variants(GNUMBER_GENERATIONS, "MultInv")
     test_Scala_variants(GNUMBER_GENERATIONS, "MultInvPi")
 except Exception as e:
     print("Scala failed")
-    traceback.print_exc()
+    traceback.print_exception(e)
+
 os.chdir("..")  # change back to previous directory
 
 try:
@@ -613,13 +718,15 @@ try:
     test_BASH_variants(100, "mult_inverse_pi")
 except Exception as e:
     print("Bash failed")
-    traceback.print_exc()
+    traceback.print_exception(e)
 
 try:
-    test_LISP_variants(42000) # TODO: play with number of generations (proportions), default value used right now
+    test_LISP_variants(
+        42000
+    )  # TODO: play with number of generations (proportions), default value used right now
 except Exception as e:
     print("LISP failed")
-    traceback.print_exc()
+    traceback.print_exception(e)
 
 try:
     test_JavaScript_variants("associativity", True, GNUMBER_GENERATIONS)
@@ -630,7 +737,7 @@ try:
     test_JavaScript_variants("mult_inverse_pi", False, GNUMBER_GENERATIONS)
 except Exception as e:
     print("JavaScript failed")
-    traceback.print_exc()
+    traceback.print_exception(e)
 
 try:
     # TODO: doubt: is run building?
@@ -642,22 +749,22 @@ try:
     test_RUST_variants("mult_inverse_pi", GNUMBER_GENERATIONS)
 except Exception as e:
     print("Rust failed")
-    traceback.print_exc()
+    traceback.print_exception(e)
 
 try:
-    test_C_variants(GNUMBER_GENERATIONS) # includes compilation and runtime variations
+    test_C_variants(GNUMBER_GENERATIONS)  # includes compilation and runtime variations
 except Exception as e:
     print("C failed")
-    traceback.print_exc()
+    traceback.print_exception(e)
 
 try:
-    compile_JAVA_variants() # prerequisites, applies to all variants
+    compile_JAVA_variants()  # prerequisites, applies to all variants
     test_JAVA_variants("java.util.Random.nextFloat()", GNUMBER_GENERATIONS, "basic")
     test_JAVA_variants("Math.random()", GNUMBER_GENERATIONS, "math")
     test_JAVA_variants("java.util.Random.nextDouble()", GNUMBER_GENERATIONS, "double")
 except Exception as e:
     print("Java failed")
-    traceback.print_exc()
+    traceback.print_exception(e)
 
 try:
     test_PY_variants("associativity", GNUMBER_GENERATIONS)
@@ -669,6 +776,4 @@ try:
     test_PY_variants("mult-inverse-pi", GNUMBER_GENERATIONS, 42)
 except Exception as e:
     print("Python failed")
-    traceback.print_exc()
-
-
+    traceback.print_exception(e)
