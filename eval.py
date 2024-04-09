@@ -72,7 +72,7 @@ def test_PY_variants(test_name, ngen, seed=None):
     else:
         variant_info["VariabilityMisc"] = "no seed"
 
-    cmd_args = ["python", "testassoc.py", "--number", str(ngen), "--equality-check", test_name]
+    cmd_args = ["python3", "testassoc.py", "--number", str(ngen), "--equality-check", test_name]
     if seed is not None:
         cmd_args.extend(["--seed", str(seed)])
     cmd_str = " ".join(cmd_args)
