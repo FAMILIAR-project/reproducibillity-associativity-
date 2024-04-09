@@ -58,7 +58,13 @@ def analyze_results(repeat, cmd_str):
         results.append(result.stdout.strip())
     # compute min, max, mean, std of results and store them in a dictionary
     # each element of results being a string ending with %
-    results = [float(r.replace("%", "")) for r in results]
+    try:
+        results = [float(r.replace("%", "")) for r in results]
+    except Exception:
+        print("Execution failed")
+        print("Results", results)
+        print("Command", cmd_str)
+        raise
     res = {
         "min": np.min(results),
         "max": np.max(results),
@@ -236,7 +242,7 @@ def test_RUST_variants(feature, ngen, error_margin=None):
             error_margin,
         ]
     else:
-        variability_misc = f"(no error margin ie pure equality)"
+        variability_misc = "(no error margin ie pure equality)"
         cmd_args = ["cargo", "run", "--features", feature, "-q", "--"]
 
     variant_info["VariabilityMisc"] = variability_misc
