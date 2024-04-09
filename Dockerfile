@@ -55,7 +55,9 @@ RUN apt-get update && apt-get install -y \
     ocaml \
     sbcl \
     bc \
- && rm -rf /var/lib/apt/lists/*
+    && dpkg --add-architecture i386 \
+    && apt-get install wine32 \
+    && rm -rf /var/lib/apt/lists/*
 
 # Get julia and add it to the PATH
 RUN cd /opt && curl -LO https://julialang-s3.julialang.org/bin/linux/x64/1.10/julia-1.10.2-linux-x86_64.tar.gz \
