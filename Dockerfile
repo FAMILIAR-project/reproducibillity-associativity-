@@ -53,6 +53,7 @@ RUN apt-get update && apt-get install -y \
     opam \
     ocaml \
     sbcl \
+    bc \
  && rm -rf /var/lib/apt/lists/*
 
 # Get julia and add it to the PATH
