@@ -33,6 +33,8 @@ RUN apt-get update && apt-get install -y \
     cargo \
     clisp \
     r-base \
+    opam \
+    ocaml \
  && rm -rf /var/lib/apt/lists/*
 
 # Get julia and add it to the PATH
