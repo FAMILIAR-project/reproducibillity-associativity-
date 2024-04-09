@@ -1,5 +1,6 @@
 # Use a base image with a Unix-like environment
 FROM ubuntu:22.04
+ENV DEBIAN_FRONTEND noninteractive
 
 # Set a working directory
 WORKDIR /workspace
@@ -9,6 +10,10 @@ RUN apt-get update && apt-get install -y \
     curl \
     gnupg \
     software-properties-common
+
+# Add R repository
+RUN curl -sL "https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc" | gpg --dearmor | tee /usr/share/keyrings/r-project.gpg > /dev/null
+RUN echo "deb [signed-by=/usr/share/keyrings/r-project.gpg] https://cloud.r-project.org/bin/linux/ubuntu $(lsb_release -cs)-cran40/" | tee -a /etc/apt/sources.list.d/r-project.list
 
 # Add the sbt repository GPG key and repository
 RUN curl -sL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x2EE0EA64E40A89B84B2DF73499E82A75642AC823" | gpg --dearmor | tee /usr/share/keyrings/sbt-archive-keyring.gpg > /dev/null
@@ -27,12 +32,14 @@ RUN apt-get update && apt-get install -y \
     rustc \
     cargo \
     clisp \
+    r-base \
  && rm -rf /var/lib/apt/lists/*
 
 # Get julia and add it to the PATH
 RUN cd /opt && curl -LO https://julialang-s3.julialang.org/bin/linux/x64/1.10/julia-1.10.2-linux-x86_64.tar.gz \
     && tar zxvf julia-1.10.2-linux-x86_64.tar.gz 
 ENV PATH="${PATH}:/opt/julia-1.10.2/bin"
+RUN julia -e 'import Pkg;Pkg.add("ArgParse")'
 
 # Add go
 RUN cd /opt && curl -LO https://go.dev/dl/go1.22.2.linux-amd64.tar.gz \
