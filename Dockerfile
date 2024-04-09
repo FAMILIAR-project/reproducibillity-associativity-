@@ -43,7 +43,7 @@ RUN apt-get update && apt-get install -y \
     default-jdk \
     gcc \
     clang \
-    i686-w64-mingw32-gcc \
+    gcc-mingw-w64-i686 \
     sbt \
     nodejs \
     npm \
