@@ -39,6 +39,7 @@ RUN echo "deb [signed-by=/usr/share/keyrings/sbt-archive-keyring.gpg] https://re
 RUN apt-get update && apt-get install -y \
     python3 \
     python3-pip \
+    python3-numpy \
     default-jdk \
     gcc \
     clang \
@@ -51,6 +52,7 @@ RUN apt-get update && apt-get install -y \
     r-base \
     opam \
     ocaml \
+    sbcl \
  && rm -rf /var/lib/apt/lists/*
 
 # Get julia and add it to the PATH
@@ -65,13 +67,9 @@ RUN cd /opt && curl -LO https://go.dev/dl/go1.22.2.linux-amd64.tar.gz \
 ENV PATH="${PATH}:/opt/go/bin"
 
 # Swift
-
 RUN cd /opt && curl -LO https://download.swift.org/swift-5.10-release/ubuntu2204/swift-5.10-RELEASE/swift-5.10-RELEASE-ubuntu22.04.tar.gz \
     && tar xzf swift-5.10-RELEASE-ubuntu22.04.tar.gz
 ENV PATH="${PATH}:/opt/swift-5.10-RELEASE-ubuntu22.04/usr/bin"
-
-# Numpy for eval.py
-RUN python3 -m pip install numpy
 
 # Perl needs enum package
 RUN cpan install Getopt::Long enum
@@ -81,6 +79,9 @@ RUN cpan install Getopt::Long enum
 
 # Copy your eval.py (and any other necessary files) into the container
 COPY . /workspace
+
+# Javascript
+RUN cd /workspace/js && npm install
 
 # Command to run on container start (modify as needed)
 CMD ["python3", "eval.py"]
