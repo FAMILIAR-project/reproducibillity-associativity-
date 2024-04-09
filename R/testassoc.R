@@ -1,3 +1,8 @@
+#define packages to install
+packages <- c('optparse')
+
+#install all packages that are not already installed
+install.packages(setdiff(packages, rownames(installed.packages())),,repos = "http://cran.us.r-project.org")
 # Load required packages
 library(optparse)
 # library(enum)

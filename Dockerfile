@@ -43,6 +43,7 @@ RUN apt-get update && apt-get install -y \
     default-jdk \
     gcc \
     clang \
+    gcc-mingw-w64-i686 \
     sbt \
     nodejs \
     npm \
@@ -53,7 +54,11 @@ RUN apt-get update && apt-get install -y \
     opam \
     ocaml \
     sbcl \
- && rm -rf /var/lib/apt/lists/*
+    bc \
+    && dpkg --add-architecture i386 \
+    && apt-get update \
+    && apt-get install -y wine32 \
+    && rm -rf /var/lib/apt/lists/*
 
 # Get julia and add it to the PATH
 RUN cd /opt && curl -LO https://julialang-s3.julialang.org/bin/linux/x64/1.10/julia-1.10.2-linux-x86_64.tar.gz \
